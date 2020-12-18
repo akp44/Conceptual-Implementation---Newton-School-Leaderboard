@@ -12,7 +12,20 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(bodyParser.json())
 // your code goes here
+app.get("/topRankings", async (req,res) => {
+   res.send(
+       await data.find().skip(san(req.query.offset,0))
+       .limit(san(req.query.limit, 20))
+   );
+});
 
+const san = (value,defaultValue) => {
+    if(value === null || value === undefined || isNaN(Number(value))){
+        return defaultValue;
+    }else{
+        return Number(value);
+    }
+}
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
 
