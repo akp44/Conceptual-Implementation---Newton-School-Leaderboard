@@ -12,21 +12,42 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(bodyParser.json())
 // your code goes here
-app.get("/topRankings", async (req,res) => {
-   res.send(
-       await data.find().skip(san(req.query.offset,0))
-       .limit(san(req.query.limit, 20))
-   );
-});
-
-const san = (value,defaultValue) => {
-    if(value === null || value === undefined || isNaN(Number(value))){
-        return defaultValue;
-    }else{
-        return Number(value);
-    }
-}
+app.get("/topRankings", async (req, res) => {
+    const { limit, offset } = req.query;
+    const lim = limit === undefined ? 20 : isNaN(limit) ? 20 : Number(limit);
+    const off = offset === undefined ? 0 : isNaN(offset) ? 0 : Number(offset);
+    res.send(data.slice(off,off+lim));
+})
 
 app.listen(port, () => console.log(`App listening on port ${port}!`))
 
 module.exports = app;
+
+
+/*const express = require('express')
+const app = express()
+const bodyParser = require("body-parser");
+const port = 8080
+app.use(express.urlencoded());
+
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
+const  {data} = require('./data')
+
+app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(bodyParser.json())
+// your code goes here
+
+app.get("/topRankings", (req,res) => {
+    const { limit, offset } = req.query;
+    const lim = limit === undefined ? 20 : isNaN(limit) ? 20 : Number(limit);
+    const off = offset === undefined ? 0 : isNaN(offset) ? 0 : Number(offset);
+    res.send(data.slice(off,off+lim));
+    
+});
+
+
+app.listen(port, () => console.log(`App listening on port ${port}!`))
+
+module.exports = app;*/
